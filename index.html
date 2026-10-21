@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>臺中國家歌劇院 | 歷史與建築之美 National Taichung Theater</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Calligraphy (Ma Shan Zheng, ZCOOL XiaoWei) & Traditional Serif -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&family=Noto+Serif+TC:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,600;0,800;1,400&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        opera: {
+                            red: '#7A1C20',
+                            darkred: '#4A0D10',
+                            gold: '#C5A059',
+                            cream: '#FAF7F2',
+                            dark: '#1C1917',
+                            muted: '#78716C'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        calligraphy: ['"Ma Shan Zheng"', '"ZCOOL XiaoWei"', 'serif'],
+                        display: ['"Playfair Display"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #FAF7F2;
+            color: #1C1917;
+            font-family: 'Noto Serif TC', serif;
+            overflow-x: hidden;
+        }
+
+        /* Calligraphic Header Style */
+        .font-calligraphy {
+            font-family: 'Ma Shan Zheng', 'ZCOOL XiaoWei', cursive, serif;
+            letter-spacing: 0.08em;
+        }
+
+        .hero-bg {
+            background: linear-gradient(to bottom, rgba(28, 25, 23, 0.5), rgba(122, 28, 32, 0.85)), 
+                        url('https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&q=80&w=1920');
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Curtained Reveal Grid Overlay Style */
+        #curtainOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            pointer-events: none;
+            display: grid;
+            grid-template-columns: repeat(16, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+        }
+
+        .stagger-tile {
+            background-color: #521013;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+            background-image: linear-gradient(135deg, #7A1C20 25%, #521013 100%);
+        }
+
+        /* Glasscard aesthetics */
+        .glass-card {
+            background: rgba(250, 247, 242, 0.88);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(197, 160, 89, 0.25);
+        }
+
+        /* Custom Modal / Alert Box */
+        #customModal {
+            transition: opacity 0.3s ease;
+        }
+
+        /* Draggable Physics Card Cursor Styling */
+        .draggable-card {
+            cursor: grab;
+            user-select: none;
+            touch-action: none;
+            will-change: transform;
+        }
+
+        .draggable-card:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="bg-opera-cream text-opera-dark selection:bg-opera-gold selection:text-white">
+
+    <div id="curtainOverlay"></div>
+
+    <div id="curtainBanner" class="fixed inset-0 z-[10000] flex flex-col items-center justify-center bg-opera-darkred text-white pointer-events-none transition-opacity duration-700">
+        <div class="text-center px-6 space-y-4">
+            <span class="text-opera-gold tracking-[0.3em] uppercase text-sm font-light">National Taichung Theater</span>
+            <h1 class="text-5xl md:text-7xl font-calligraphy text-opera-gold drop-shadow-lg tracking-widest">
+                臺中國家歌劇院
+            </h1>
+            <p class="text-xs md:text-sm tracking-[0.2em] opacity-80 font-serif">美聲涵洞 ‧ 世紀開幕</p>
+        </div>
+    </div>
+
+    <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300 glass-card border-b border-opera-gold/20 shadow-sm" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-full bg-opera-red flex items-center justify-center text-opera-gold text-xl font-bold shadow-md transition-transform group-hover:scale-105 border border-opera-gold/40">
+                    NTT
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-widest text-opera-red font-calligraphy" data-zh="臺中國家歌劇院" data-en="National Taichung Theater">臺中國家歌劇院</span>
+                    <span class="text-[10px] text-opera-muted tracking-widest uppercase">Cultural Heritage & Architecture</span>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="#about" class="nav-link hover:text-opera-red transition-colors" data-zh="建築魅力" data-en="Architecture">建築魅力</a>
+                <a href="#history" class="nav-link hover:text-opera-red transition-colors" data-zh="歷史沿革" data-en="History">歷史沿革</a>
+                <a href="#exhibitions" class="nav-link hover:text-opera-red transition-colors" data-zh="當季/歷年展演" data-en="Exhibitions">當季/歷年展演</a>
+                <a href="#visit" class="nav-link hover:text-opera-red transition-colors" data-zh="參觀資訊" data-en="Visit Info">參觀資訊</a>
+                
+                <!-- Language Toggle Button -->
+                <button id="langToggleBtn" onclick="toggleLanguage()" class="flex items-center gap-2 px-4 py-1.5 rounded-full border border-opera-gold text-opera-red hover:bg-opera-red hover:text-white transition-all shadow-sm">
+                    <i class="fa-solid fa-globe"></i>
+                    <span id="langText">English</span>
+                </button>
+            </div>
+
+            <!-- Mobile Menu Switcher -->
+            <div class="md:hidden flex items-center gap-3">
+                <button onclick="toggleLanguage()" class="text-xs px-2.5 py-1 rounded-full border border-opera-gold text-opera-red">
+                    <span id="langTextMobile">EN</span>
+                </button>
+                <button id="mobileMenuBtn" class="text-opera-red text-2xl focus:outline-none">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobileMenu" class="hidden md:hidden bg-opera-cream border-b border-opera-gold/20 px-6 py-4 space-y-4">
+            <a href="#about" class="block text-opera-dark hover:text-opera-red" onclick="closeMobileMenu()" data-zh="建築魅力" data-en="Architecture">建築魅力</a>
+            <a href="#history" class="block text-opera-dark hover:text-opera-red" onclick="closeMobileMenu()" data-zh="歷史沿革" data-en="History">歷史沿革</a>
+            <a href="#exhibitions" class="block text-opera-dark hover:text-opera-red" onclick="closeMobileMenu()" data-zh="當季/歷年展演" data-en="Exhibitions">當季/歷年展演</a>
+            <a href="#visit" class="block text-opera-dark hover:text-opera-red" onclick="closeMobileMenu()" data-zh="參觀資訊" data-en="Visit Info">參觀資訊</a>
+        </div>
+    </nav>
+
+    <section class="relative min-h-screen flex items-center justify-center hero-bg pt-20 px-6 text-center text-white overflow-hidden">
+        <div class="absolute inset-0 bg-black/40"></div>
+        <div class="relative z-10 max-w-4xl mx-auto space-y-6">
+            <p class="hero-sub hero-float text-opera-gold text-lg md:text-2xl font-light tracking-[0.25em] mb-2 uppercase" 
+               data-zh="伊東豊雄建築奇蹟 ‧ 壺中天" 
+               data-en="Toyo Ito's Architectural Miracle ‧ Sound Cave">
+                伊東豊雄建築奇蹟 ‧ 壺中天
+            </p>
+
+            <!-- Main Calligraphic Hero Title with Floating Dynamic Effect -->
+            <h1 class="hero-title hero-float inline-block text-5xl md:text-7xl lg:text-8xl font-calligraphy text-amber-50 tracking-wider leading-tight drop-shadow-2xl"
+                data-zh="聲響與藝術之流動殿堂" 
+                data-en="A Flowing Sanctuary of Sound & Art">
+                聲響與藝術之流動殿堂
+            </h1>
+
+            <p class="hero-desc hero-float text-base md:text-xl text-gray-200 max-w-2xl mx-auto font-serif font-light leading-relaxed tracking-wide"
+               data-zh="全球首座採用「曲牆」與「壺中居」結構工法的當代劇院，將表演藝術與建築工藝完美融入臺灣城市生命力。"
+               data-en="The world's first contemporary theater built using continuous 3D curved wall technology, seamlessly blending performing arts with urban vitality.">
+                全球首座採用「曲牆」與「壺中居」結構工法的當代劇院，將表演藝術與建築工藝完美融入臺灣城市生命力。
+            </p>
+
+            <div class="hero-btn pt-8 flex justify-center gap-4">
+                <a href="#about" class="px-8 py-3.5 bg-opera-red hover:bg-opera-darkred text-white text-lg font-medium rounded-full transition-all shadow-xl hover:shadow-2xl flex items-center gap-3 border border-opera-gold/30">
+                    <span data-zh="探索建築之美" data-en="Explore Design">探索建築之美</span>
+                    <i class="fa-solid fa-arrow-down text-sm"></i>
+                </a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/60 animate-bounce">
+            <i class="fa-solid fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <section id="about" class="py-28 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-16 space-y-3">
+            <span class="text-opera-gold text-sm tracking-[0.3em] uppercase font-semibold" data-zh="世界九大新地標" data-en="World 9 New Landmarks">世界九大新地標</span>
+            <h2 class="text-4xl md:text-5xl font-calligraphy font-bold text-opera-red tracking-widest" data-zh="曲牆巧思與建築亮點" data-en="Architectural Highlights">曲牆巧思與建築亮點</h2>
+            <p class="text-xs text-opera-muted font-serif flex items-center justify-center gap-1 mt-1">
+                <i class="fa-solid fa-hand-pointer"></i>
+                <span data-zh="（拖曳下方建築影像體驗物理彈簧互動）" data-en="(Drag photos below to experience spring physics)">（拖曳下方建築影像體驗物理彈簧互動）</span>
+            </p>
+            <div class="w-24 h-1 bg-opera-gold mx-auto rounded-full mt-2"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Feature 1 -->
+            <div class="arch-card bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-opera-gold/15 flex flex-col justify-between">
+                <div>
+                    <div class="w-16 h-16 bg-opera-red/10 rounded-2xl flex items-center justify-center text-opera-red text-3xl mb-6">
+                        <i class="fa-solid fa-archway"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold font-calligraphy mb-3 text-opera-dark" data-zh="壺中居 (Catoid Shapes)" data-en="Sound Caves">壺中居 (Catoid Shapes)</h3>
+                    <p class="text-opera-muted text-sm leading-relaxed" 
+                       data-zh="無樑無柱的曲牆結構，創造出宛如原始洞穴般的自然聲學空間，讓聲音在建築內部獲得最自然的迴響與流動。"
+                       data-en="A beam-less, column-less curved wall architecture creating a natural acoustic cave environment for seamless sound propagation.">
+                        無樑無柱的曲牆結構，創造出宛如原始洞穴般的自然聲學空間，讓聲音在建築內部獲得最自然的迴響與流動。
+                    </p>
+                </div>
+                <div class="draggable-card mt-6 rounded-2xl overflow-hidden shadow-md">
+                    <img src="https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=600" alt="Curve" class="object-cover h-48 w-full pointer-events-none" />
+                </div>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="arch-card bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-opera-gold/15 flex flex-col justify-between">
+                <div>
+                    <div class="w-16 h-16 bg-opera-gold/20 rounded-2xl flex items-center justify-center text-opera-gold text-3xl mb-6">
+                        <i class="fa-solid fa-wind"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold font-calligraphy mb-3 text-opera-dark" data-zh="呼吸的建築 (Breathing Space)" data-en="Breathing Architecture">呼吸的建築 (Breathing Space)</h3>
+                    <p class="text-opera-muted text-sm leading-relaxed"
+                       data-zh="通氣圓孔貫穿全館，將陽光與都市氣流無縫引入內部，使整座歌劇院猶如擁有生命呼吸的生命體。"
+                       data-en="Integrated breathing pores allow natural sunlight and airflow to permeate throughout the theater, breathing life into the structure.">
+                        通氣圓孔貫穿全館，將陽光與都市氣流無縫引入內部，使整座歌劇院猶如擁有生命呼吸的生命體。
+                    </p>
+                </div>
+                <div class="draggable-card mt-6 rounded-2xl overflow-hidden shadow-md">
+                    <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=600" alt="Interior" class="object-cover h-48 w-full pointer-events-none" />
+                </div>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="arch-card bg-white p-8 rounded-3xl shadow-sm hover:shadow-xl transition-all border border-opera-gold/15 flex flex-col justify-between">
+                <div>
+                    <div class="w-16 h-16 bg-opera-red/10 rounded-2xl flex items-center justify-center text-opera-red text-3xl mb-6">
+                        <i class="fa-solid fa-tree"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold font-calligraphy mb-3 text-opera-dark" data-zh="空中花園 (Rooftop Garden)" data-en="Sky Garden">空中花園 (Rooftop Garden)</h3>
+                    <p class="text-opera-muted text-sm leading-relaxed"
+                       data-zh="頂樓結合綠意植栽與火山口造型曲牆，在繁華台中城市的核心，提供一片高空靜謐的當代休閒綠洲。"
+                       data-en="The rooftop integrates lush landscaping with crater-like curved walls, serving as a tranquil high-altitude green oasis.">
+                        頂樓結合綠意植栽與火山口造型曲牆，在繁華台中城市的核心，提供一片高空靜謐的當代休閒綠洲。
+                    </p>
+                </div>
+                <div class="draggable-card mt-6 rounded-2xl overflow-hidden shadow-md">
+                    <img src="https://images.unsplash.com/photo-1582650625119-3a31f8418b0d?auto=format&fit=crop&q=80&w=600" alt="Rooftop" class="object-cover h-48 w-full pointer-events-none" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="exhibitions" class="py-28 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-12 space-y-3">
+            <span class="text-opera-gold text-sm tracking-[0.3em] uppercase font-semibold" data-zh="藝術盛宴" data-en="Performances & Exhibitions">藝術盛宴</span>
+            <h2 class="text-4xl md:text-5xl font-calligraphy font-bold text-opera-red tracking-widest" data-zh="歷年與當季精彩作品" data-en="Curated Productions">歷年與當季精彩作品</h2>
+            <div class="w-24 h-1 bg-opera-gold mx-auto rounded-full"></div>
+        </div>
+
+        <!-- Category Filter Controls -->
+        <div class="flex justify-center gap-2 md:gap-4 mb-12 flex-wrap text-sm">
+            <button onclick="filterExhibitions('all')" class="filter-btn active-filter px-6 py-2.5 rounded-full border border-opera-gold bg-opera-gold text-white hover:bg-opera-red transition-all shadow-md font-medium" data-filter="all" data-zh="全部展演" data-en="All Works">全部展演</button>
+            <button onclick="filterExhibitions('opera')" class="filter-btn px-6 py-2.5 rounded-full border border-opera-gold text-opera-dark hover:bg-opera-gold hover:text-white transition-all shadow-sm font-medium" data-filter="opera" data-zh="旗艦歌劇" data-en="Opera">旗艦歌劇</button>
+            <button onclick="filterExhibitions('digital')" class="filter-btn px-6 py-2.5 rounded-full border border-opera-gold text-opera-dark hover:bg-opera-gold hover:text-white transition-all shadow-sm font-medium" data-filter="digital" data-zh="光影/數位藝術" data-en="Digital Art">光影/數位藝術</button>
+            <button onclick="filterExhibitions('dance')" class="filter-btn px-6 py-2.5 rounded-full border border-opera-gold text-opera-dark hover:bg-opera-gold hover:text-white transition-all shadow-sm font-medium" data-filter="dance" data-zh="舞蹈與劇場" data-en="Dance & Theater">舞蹈與劇場</button>
+        </div>
+
+        <!-- Exhibition Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="exhibitionGrid">
+            <!-- Card 1 -->
+            <div class="exhi-card opera bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-opera-gold/15 flex flex-col">
+                <div class="relative overflow-hidden h-60">
+                    <img src="https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&q=80&w=600" alt="Opera" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                    <span class="absolute top-4 right-4 bg-opera-red text-white text-xs px-3.5 py-1 rounded-full font-medium shadow-md" data-zh="經典歌劇" data-en="Opera">經典歌劇</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold font-calligraphy text-opera-dark mb-2" data-zh="華格納歌劇《指環》全本" data-en="Wagner's Der Ring des Nibelungen">華格納歌劇《指環》全本</h3>
+                        <p class="text-opera-muted text-sm leading-relaxed mb-4"
+                           data-zh="跨越四年製作，聯手國際級藝術團隊，於臺中國家歌劇院大劇院完美呈獻連綿壯闊的歌劇史詩。"
+                           data-en="A multi-year international co-production presenting Wagner's epic four-opera cycle on the Grand Theater stage.">
+                            跨越四年製作，聯手國際級藝術團隊，於臺中國家歌劇院大劇院完美呈獻連綿壯闊的歌劇史詩。
+                        </p>
+                    </div>
+                    <span class="text-xs text-opera-gold font-semibold tracking-wider">2016 - 2019 Milestone</span>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="exhi-card digital bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-opera-gold/15 flex flex-col">
+                <div class="relative overflow-hidden h-60">
+                    <img src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&q=80&w=600" alt="Light" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                    <span class="absolute top-4 right-4 bg-opera-gold text-white text-xs px-3.5 py-1 rounded-full font-medium shadow-md" data-zh="光影藝術" data-en="Light Projection">光影藝術</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold font-calligraphy text-opera-dark mb-2" data-zh="曲牆沉浸光影秀《光之曲幕》" data-en="Curved Wall Light Projection">曲牆沉浸光影秀《光之曲幕》</h3>
+                        <p class="text-opera-muted text-sm leading-relaxed mb-4"
+                           data-zh="將高解析度微型光影投影於二樓挑高曲牆，民眾可自由走動，置身奇幻絢麗的視覺穹頂之下。"
+                           data-en="High-definition projection mapped directly onto 19m high curved walls, inviting visitors into a mesmerizing audiovisual landscape.">
+                            將高解析度微型光影投影於二樓挑高曲牆，民眾可自由走動，置身奇幻絢麗的視覺穹頂之下。
+                        </p>
+                    </div>
+                    <span class="text-xs text-opera-gold font-semibold tracking-wider">Permanent / Seasonal</span>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="exhi-card dance bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all border border-opera-gold/15 flex flex-col">
+                <div class="relative overflow-hidden h-60">
+                    <img src="https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=600" alt="Dance" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                    <span class="absolute top-4 right-4 bg-opera-dark text-white text-xs px-3.5 py-1 rounded-full font-medium shadow-md" data-zh="現代舞蹈" data-en="Modern Dance">現代舞蹈</span>
+                </div>
+                <div class="p-6 flex-1 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold font-calligraphy text-opera-dark mb-2" data-zh="雲門舞集與國際當代舞團" data-en="Cloud Gate & Contemporary Dance">雲門舞集與國際當代舞團</h3>
+                        <p class="text-opera-muted text-sm leading-relaxed mb-4"
+                           data-zh="結合歌劇院獨一無二的聲學效果與極致舞台條件，帶來撼動靈魂的現代舞蹈視覺震撼。"
+                           data-en="World-renowned dance companies leverage the extraordinary acoustic and visual dynamic of NTT's main halls.">
+                            結合歌劇院獨一無二的聲學效果與極致舞台條件，帶來撼動靈魂的現代舞蹈視覺震撼。
+                        </p>
+                    </div>
+                    <span class="text-xs text-opera-gold font-semibold tracking-wider">Annual Featured Series</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="visit" class="py-28 bg-opera-red text-white relative">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <span class="text-opera-gold text-sm tracking-[0.3em] uppercase font-semibold" data-zh="蒞臨體驗" data-en="Visitor Guide">蒞臨體驗</span>
+                <h2 class="text-4xl md:text-5xl font-calligraphy font-bold leading-tight" data-zh="參觀導覽與場館資訊" data-en="Plan Your Visit">參觀導覽與場館資訊</h2>
+                <p class="text-gray-200 text-base leading-relaxed font-serif"
+                   data-zh="臺中國家歌劇院不僅是表演藝術殿堂，更是一座對公眾開放的藝術生活公園。我們提供專人導覽服務，歡迎來自台灣與世界各地的旅人前來感受。"
+                   data-en="More than an arts venue, NTT is an open public park of aesthetics. We provide guided architectural tours daily for international and local visitors.">
+                    臺中國家歌劇院不僅是表演藝術殿堂，更是一座對公眾開放的藝術生活公園。我們提供專人導覽服務，歡迎來自台灣與世界各地的旅人前來感受。
+                </p>
+
+                <div class="space-y-5 pt-4 text-sm font-serif">
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-opera-gold text-xl shrink-0 border border-white/20">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-opera-gold text-lg font-calligraphy" data-zh="場館地址" data-en="Address">場館地址</h4>
+                            <p class="text-gray-200" data-zh="407025 臺中市西屯區惠來路二段101號" data-en="No. 101, Sec. 2, Huilai Rd., Xitun Dist., Taichung City">407025 臺中市西屯區惠來路二段101號</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center text-opera-gold text-xl shrink-0 border border-white/20">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-opera-gold text-lg font-calligraphy" data-zh="開館時間" data-en="Opening Hours">開館時間</h4>
+                            <p class="text-gray-200" data-zh="週日、週二至週四 11:30 - 21:00 | 週五至週六 11:30 - 22:00 (週一休館)" data-en="Sun, Tue-Thu 11:30-21:00 | Fri-Sat 11:30-22:00 (Closed on Mondays)">週日、週二至週四 11:30 - 21:00 | 週五至週六 11:30 - 22:00 (週一休館)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Form Card -->
+            <div class="bg-white/10 backdrop-blur-md p-8 md:p-10 rounded-3xl border border-white/20 space-y-6 shadow-2xl">
+                <h3 class="text-3xl font-bold font-calligraphy text-opera-gold" data-zh="預約專人建築導覽" data-en="Book Guided Tour">預約專人建築導覽</h3>
+                <p class="text-xs text-gray-200 leading-relaxed font-serif"
+                   data-zh="專人深入剖析伊東豊雄曲牆工法、建築聲學設計與獨特場館空間（提供中/英文語音導覽）。"
+                   data-en="Explore Toyo Ito's curved wall engineering and acoustic design through certified tour guides available in English and Mandarin.">
+                    專人深入剖析伊東豊雄曲牆工法、建築聲學設計與獨特場館空間（提供中/英文語音導覽）。
+                </p>
+                <form onsubmit="event.preventDefault(); showCustomModal();" class="space-y-4">
+                    <input type="text" placeholder="您的姓名 / Name" required class="w-full px-5 py-3.5 rounded-2xl bg-white/15 border border-white/30 text-white placeholder-gray-300 text-sm focus:outline-none focus:border-opera-gold" />
+                    <input type="email" placeholder="電子信箱 / Email" required class="w-full px-5 py-3.5 rounded-2xl bg-white/15 border border-white/30 text-white placeholder-gray-300 text-sm focus:outline-none focus:border-opera-gold" />
+                    <button type="submit" class="w-full py-4 bg-opera-gold hover:bg-amber-500 text-opera-dark font-bold text-base rounded-2xl transition-all shadow-lg font-serif">
+                        <span data-zh="提交預約申請" data-en="Submit Booking Request">提交預約申請</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-opera-dark text-gray-400 py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6 text-sm">
+            <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full bg-opera-red flex items-center justify-center text-opera-gold text-xs font-bold border border-opera-gold/30">NTT</div>
+                <span font-serif data-zh="© 2026 臺中國家歌劇院 歷史文化推廣專案" data-en="© 2026 National Taichung Theater Culture & Heritage">© 2026 臺中國家歌劇院 歷史文化推廣專案</span>
+            </div>
+            <div class="flex space-x-6 text-xl">
+                <a href="#" class="hover:text-opera-gold transition-colors"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#" class="hover:text-opera-gold transition-colors"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-opera-gold transition-colors"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="customModal" class="fixed inset-0 z-[11000] bg-black/60 backdrop-blur-sm hidden items-center justify-center p-6">
+        <div class="bg-opera-cream border border-opera-gold rounded-3xl p-8 max-w-md w-full shadow-2xl text-center space-y-6">
+            <div class="w-16 h-16 bg-opera-red/10 text-opera-red rounded-full flex items-center justify-center mx-auto text-3xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <h3 class="text-2xl font-bold font-calligraphy text-opera-dark" data-zh="預約申請已收到" data-en="Booking Received">預約申請已收到</h3>
+            <p class="text-sm text-opera-muted font-serif" data-zh="感謝您的預約！專人將會在 24 小時內以 Email 與您確認導覽細節。" data-en="Thank you for booking! Our tour team will reach out via email within 24 hours.">
+                感謝您的預約！專人將會在 24 小時內以 Email 與您確認導覽細節。
+            </p>
+            <button onclick="closeCustomModal()" class="px-8 py-3 bg-opera-red text-white rounded-full hover:bg-opera-darkred transition-all font-serif">
+                <span data-zh="確定" data-en="OK">確定</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Language State
+        let currentLang = 'zh';
+
+        // Custom Modal Logic
+        function showCustomModal() {
+            const modal = document.getElementById('customModal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            anime({
+                targets: '#customModal > div',
+                scale: [0.8, 1],
+                opacity: [0, 1],
+                duration: 400,
+                easing: 'easeOutCubic'
+            });
+        }
+
+        function closeCustomModal() {
+            const modal = document.getElementById('customModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        // Floating Kinetic Typography Effect for Hero Section
+        function initHeroFloatingAnimation() {
+            anime({
+                targets: '.hero-title',
+                translateY: [-10, 10],
+                rotate: [-0.8, 0.8],
+                duration: 4000,
+                direction: 'alternate',
+                loop: true,
+                easing: 'easeInOutSine'
+            });
+
+            anime({
+                targets: '.hero-sub',
+                translateY: [-6, 6],
+                duration: 3200,
+                direction: 'alternate',
+                loop: true,
+                easing: 'easeInOutQuad'
+            });
+
+            anime({
+                targets: '.hero-desc',
+                translateY: [-4, 4],
+                duration: 4800,
+                direction: 'alternate',
+                loop: true,
+                easing: 'easeInOutSine'
+            });
+        }
+
+        // Draggable Card Function with Spring Physics (releaseEase matching stiffness: 120, damping: 6)
+        function initDraggableSpringPhysics() {
+            const cards = document.querySelectorAll('.draggable-card');
+
+            cards.forEach(card => {
+                let isDragging = false;
+                let startX, startY;
+                let currentX = 0, currentY = 0;
+                let releaseAnimation = null;
+
+                const startDrag = (e) => {
+                    isDragging = true;
+                    if (releaseAnimation) releaseAnimation.pause();
+                    
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    
+                    startX = clientX - currentX;
+                    startY = clientY - currentY;
+                    
+                    anime({
+                        targets: card,
+                        scale: 1.05,
+                        boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1)',
+                        duration: 200,
+                        easing: 'easeOutQuad'
+                    });
+                };
+
+                const onDrag = (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    
+                    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                    
+                    currentX = clientX - startX;
+                    currentY = clientY - startY;
+
+                    card.style.transform = `translate3d(${currentX}px, ${currentY}px, 0) rotate(${currentX * 0.05}deg)`;
+                };
+
+                const endDrag = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+
+                    // Release animation simulating createSpring({ stiffness: 120, damping: 6 }) physics bounce
+                    releaseAnimation = anime({
+                        targets: card,
+                        translateX: 0,
+                        translateY: 0,
+                        rotate: 0,
+                        scale: 1,
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+                        duration: 1200,
+                        easing: 'spring(1, 120, 6, 0)', // Physics spring parameters: mass, stiffness, damping, velocity
+                        complete: function() {
+                            currentX = 0;
+                            currentY = 0;
+                            card.style.transform = '';
+                        }
+                    });
+                };
+
+                card.addEventListener('mousedown', startDrag);
+                card.addEventListener('mousemove', onDrag);
+                window.addEventListener('mouseup', endDrag);
+
+                card.addEventListener('touchstart', startDrag, { passive: false });
+                card.addEventListener('touchmove', onDrag, { passive: false });
+                window.addEventListener('touchend', endDrag);
+            });
+        }
+
+        // Language Switcher Function
+        function toggleLanguage() {
+            currentLang = currentLang === 'zh' ? 'en' : 'zh';
+            
+            anime({
+                targets: '[data-zh]',
+                opacity: [1, 0, 1],
+                duration: 400,
+                easing: 'easeInOutQuad',
+                update: function(anim) {
+                    if (anim.progress > 50) {
+                        document.querySelectorAll('[data-zh]').forEach(el => {
+                            el.textContent = el.getAttribute(`data-${currentLang}`);
+                        });
+                    }
+                }
+            });
+
+            document.getElementById('langText').textContent = currentLang === 'zh' ? 'English' : '中文';
+            document.getElementById('langTextMobile').textContent = currentLang === 'zh' ? 'EN' : '中';
+        }
+
+        // Exhibition Filter Function
+        function filterExhibitions(category) {
+            const cards = document.querySelectorAll('.exhi-card');
+            const btns = document.querySelectorAll('.filter-btn');
+
+            btns.forEach(btn => {
+                if (btn.getAttribute('data-filter') === category) {
+                    btn.classList.add('bg-opera-gold', 'text-white');
+                    btn.classList.remove('text-opera-dark');
+                } else {
+                    btn.classList.remove('bg-opera-gold', 'text-white');
+                    btn.classList.add('text-opera-dark');
+                }
+            });
+
+            cards.forEach(card => {
+                if (category === 'all' || card.classList.contains(category)) {
+                    card.style.display = 'flex';
+                    anime({
+                        targets: card,
+                        opacity: [0, 1],
+                        scale: [0.9, 1],
+                        duration: 500,
+                        easing: 'easeOutQuad'
+                    });
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Mobile Menu Drawer Control
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        function closeMobileMenu() {
+            mobileMenu.classList.add('hidden');
+        }
+
+        // Initialization Logic with Grand Curtain Stagger Animation & Spring Physics
+        window.onload = function() {
+            // Initialize Spring Physics Draggables and Dynamic Typography Floating Animations
+            initDraggableSpringPhysics();
+
+            // 1. Generate Curtain Grid Tiles dynamically (16 cols x 10 rows = 160 tiles)
+            const curtainOverlay = document.getElementById('curtainOverlay');
+            const columns = 16;
+            const rows = 10;
+            const totalTiles = columns * rows;
+
+            for (let i = 0; i < totalTiles; i++) {
+                const tile = document.createElement('div');
+                tile.classList.add('stagger-tile');
+                curtainOverlay.appendChild(tile);
+            }
+
+            // 2. Execute Grid Staggering Animation using Anime.js
+            const curtainTL = anime.timeline({
+                easing: 'easeInOutQuart'
+            });
+
+            curtainTL
+            .add({
+                targets: '#curtainBanner',
+                opacity: [1, 0],
+                duration: 900,
+                delay: 1000,
+                easing: 'easeOutCubic'
+            })
+            .add({
+                targets: '.stagger-tile',
+                opacity: [1, 0],
+                scale: [1, 0],
+                rotate: function() { return anime.random(-15, 15); },
+                delay: anime.stagger(30, {grid: [columns, rows], from: 'center'}),
+                duration: 900,
+                complete: function() {
+                    curtainOverlay.style.display = 'none';
+                    document.getElementById('curtainBanner').style.display = 'none';
+                    // Start subtle floating typography effect after curtain reveal
+                    initHeroFloatingAnimation();
+                }
+            }, '-=400')
+            // 3. Reveal Hero Content
+            .add({
+                targets: '.hero-sub',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800
+            }, '-=200')
+            .add({
+                targets: '.hero-title',
+                opacity: [0, 1],
+                translateY: [40, 0],
+                scale: [0.9, 1],
+                duration: 1000
+            }, '-=600')
+            .add({
+                targets: '.hero-desc',
+                opacity: [0, 1],
+                translateY: [30, 0],
+                duration: 800
+            }, '-=600')
+            .add({
+                targets: '.hero-btn',
+                opacity: [0, 1],
+                scale: [0.8, 1],
+                duration: 600
+            }, '-=400');
+
+            // Scroll Animation Observer for Architectural Cards and Timeline
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        if (entry.target.classList.contains('arch-card')) {
+                            anime({
+                                targets: entry.target,
+                                opacity: [0, 1],
+                                translateY: [50, 0],
+                                duration: 800,
+                                easing: 'easeOutCubic'
+                            });
+                        } else if (entry.target.classList.contains('timeline-item')) {
+                            anime({
+                                targets: entry.target,
+                                opacity: [0, 1],
+                                translateX: entry.target.classList.contains('right-timeline') ? [60, 0] : [-60, 0],
+                                duration: 1000,
+                                easing: 'easeOutCubic'
+                            });
+                        }
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.2 });
+
+            document.querySelectorAll('.arch-card, .timeline-item').forEach(el => {
+                el.style.opacity = '0';
+                observer.observe(el);
+            });
+        };
+    </script>
+</body>
+</html>
